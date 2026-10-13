@@ -11,21 +11,16 @@ export const seedDatabase = async () => {
     // 1. Seed Users
     const userCount = await User.countDocuments()
     if (userCount === 0) {
-      const adminPassword = await bcrypt.hash('admin123', 10)
-      const cashierPassword = await bcrypt.hash('123456', 10)
+      const pAdmin = await bcrypt.hash('admin123', 10)
+      const pManager = await bcrypt.hash('manager123', 10)
+      const pCashier = await bcrypt.hash('cashier123', 10)
+      const pStock = await bcrypt.hash('stock123', 10)
+
       await User.create([
-        {
-          name: 'Rashid Ali',
-          phone: '0300-0000000',
-          password: adminPassword,
-          role: 'Admin',
-        },
-        {
-          name: 'Zainab Bibi',
-          phone: '0311-2223334',
-          password: cashierPassword,
-          role: 'Cashier',
-        },
+        { name: 'Muhammad Rashid', phone: '0300-0000000', password: pAdmin, role: 'Admin' },
+        { name: 'Zeeshan Manager', phone: '0301-1111111', password: pManager, role: 'Manager' },
+        { name: 'Asad Cashier', phone: '0302-2222222', password: pCashier, role: 'Cashier' },
+        { name: 'Hamza Stock Keeper', phone: '0303-3333333', password: pStock, role: 'Stock Keeper' },
       ])
       console.log('Default users seeded')
     }

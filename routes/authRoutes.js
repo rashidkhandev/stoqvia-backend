@@ -51,6 +51,13 @@ router.post('/signup', async (req, res) => {
   }
 })
 
+const DEMO_PRESETS = {
+  '0300-0000000': { name: 'Muhammad Rashid', password: 'admin123', role: 'Admin' },
+  '0301-1111111': { name: 'Zeeshan Manager', password: 'manager123', role: 'Manager' },
+  '0302-2222222': { name: 'Asad Cashier', password: 'cashier123', role: 'Cashier' },
+  '0303-3333333': { name: 'Hamza Stock Keeper', password: 'stock123', role: 'Stock Keeper' },
+}
+
 router.post('/login', async (req, res) => {
   try {
     const { phone, password } = req.body
@@ -59,7 +66,17 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Phone and password are required' })
     }
 
-    const user = await User.findOne({ phone })
+    let user = await User.findOne({ phone })
+    if (!user && DEMO_PRESETS[phone] && password === DEMO_PRESETS[phone].password) {
+      const hashed = await bcrypt.hash(password, 10)
+      user = await User.create({
+        name: DEMO_PRESETS[phone].name,
+        phone,
+        password: hashed,
+        role: DEMO_PRESETS[phone].role,
+      })
+    }
+
     if (!user) {
       return res.status(401).json({ message: 'Account not found' })
     }
